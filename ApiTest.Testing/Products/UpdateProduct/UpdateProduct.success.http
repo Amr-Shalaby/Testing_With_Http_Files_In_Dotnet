@@ -1,0 +1,100 @@
+### Update Product - SUCCESS Scenarios
+### Action: Update existing product information
+### Variables loaded from: http-client.env.json
+### NOTE: Product update requires authentication!
+
+###############################################################################
+### STEP 1: Login to Get Token
+### This request is NAMED "loginForUpdate" so the token can be reused
+###############################################################################
+
+# @name loginForUpdate
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 1: Update All Fields of Existing Product
+### Expected: 200 OK with updated product
+### Note: Use ID from GetAllProducts or CreateProduct response
+### Uses token from loginForUpdate automatically!
+###############################################################################
+
+PUT {{baseUrl}}{{apiPath}}/products/1
+Authorization: Bearer {{loginForUpdate.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Updated Product Name",
+  "description": "Updated description with new information",
+  "price": 149.99,
+  "stockQuantity": 75
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 2: Update Product Price Only (with all required fields)
+### Expected: 200 OK with updated product
+### Reuses token from loginForUpdate
+###############################################################################
+
+PUT {{baseUrl}}{{apiPath}}/products/1
+Authorization: Bearer {{loginForUpdate.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Updated Product Name",
+  "description": "Updated description with new information",
+  "price": 199.99,
+  "stockQuantity": 75
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 3: Update Product to Zero Stock
+### Expected: 200 OK
+### Reuses token from loginForUpdate
+###############################################################################
+
+PUT {{baseUrl}}{{apiPath}}/products/1
+Authorization: Bearer {{loginForUpdate.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Out of Stock Product",
+  "description": "Currently unavailable",
+  "price": 99.99,
+  "stockQuantity": 0
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 4: Update Product with Special Characters
+### Expected: 200 OK
+### Reuses token from loginForUpdate
+###############################################################################
+
+PUT {{baseUrl}}{{apiPath}}/products/2
+Authorization: Bearer {{loginForUpdate.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Updated™ Product® <2024>",
+  "description": "Special characters & symbols",
+  "price": 89.99,
+  "stockQuantity": 40
+}
+

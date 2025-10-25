@@ -1,0 +1,112 @@
+### Get User Info - FAILURE Scenarios
+### Action: Test error handling for Get User Info endpoint
+
+@baseUrl = https://localhost:5001
+@apiPath = /api
+
+###############################################################################
+### FAILURE SCENARIO 1: Non-Existent Username
+### Expected: 404 Not Found
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/auth/user/nonexistentuser
+Accept: application/json
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 2: Empty Username
+### Expected: 404 Not Found or 400 Bad Request
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/auth/user/
+Accept: application/json
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 3: Username with Special Characters
+### Expected: 404 Not Found (user doesn't exist)
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/auth/user/@#$%^&*
+Accept: application/json
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 4: Username with Spaces
+### Expected: 404 Not Found or URL encoding issues
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/auth/user/user with spaces
+Accept: application/json
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 5: Very Long Username (Not in System)
+### Expected: 404 Not Found
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/auth/user/verylongusernamethatdoesnotexistinthesystembutisvalidstring
+Accept: application/json
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 6: Numeric Username (Not in System)
+### Expected: 404 Not Found
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/auth/user/12345
+Accept: application/json
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 7: Username with URL-Encoded Characters
+### Expected: 404 Not Found
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/auth/user/test%20user
+Accept: application/json
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 8: Wrong HTTP Method - POST
+### Expected: 405 Method Not Allowed
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/user/testuser
+Content-Type: application/json
+Accept: application/json
+
+{}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 9: Wrong HTTP Method - DELETE
+### Expected: 405 Method Not Allowed
+###############################################################################
+
+DELETE {{baseUrl}}{{apiPath}}/auth/user/testuser
+Accept: application/json
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 10: Wrong HTTP Method - PUT
+### Expected: 405 Method Not Allowed
+###############################################################################
+
+PUT {{baseUrl}}{{apiPath}}/auth/user/testuser
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "newemail@example.com"
+}
+

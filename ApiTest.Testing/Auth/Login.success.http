@@ -1,0 +1,102 @@
+### Login - SUCCESS Scenarios
+### Action: Authenticate user and get token
+### Variables loaded from: http-client.env.json
+
+###############################################################################
+### SUCCESS SCENARIO 1: Login with Test User
+### Expected: 200 OK with token
+### This request is NAMED "loginTestUser" so token can be reused
+###############################################################################
+
+# @name loginTestUser
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 2: Login with Admin User
+### Expected: 200 OK with token
+### This request is NAMED "loginAdmin" so token can be reused
+###############################################################################
+
+# @name loginAdmin
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin123"
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 3: Verify Token Works - Create Product
+### Expected: 201 Created
+### NOTE: This uses the token from loginTestUser automatically!
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/products
+Authorization: Bearer {{loginTestUser.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "name": "Authorized Product",
+  "description": "Created with authentication",
+  "price": 99.99,
+  "stockQuantity": 50
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 4: Verify Token Works - Create Order
+### Expected: 201 Created
+### NOTE: This uses the token from loginTestUser automatically!
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/orders
+Authorization: Bearer {{loginTestUser.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "orderDate": "2024-10-25T10:30:00Z",
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 2,
+      "unitPrice": 99.99
+    }
+  ],
+  "shippingAddress": {
+    "street": "123 Main St",
+    "city": "New York",
+    "state": "NY",
+    "zipCode": "10001",
+    "country": "USA"
+  }
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 5: Verify Admin Token Works
+### Expected: 201 Created
+### NOTE: This uses the token from loginAdmin automatically!
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/categories
+Authorization: Bearer {{loginAdmin.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "name": "Admin-Created Category",
+  "description": "Category created by admin"
+}
+

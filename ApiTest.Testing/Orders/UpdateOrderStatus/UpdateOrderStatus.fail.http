@@ -1,0 +1,111 @@
+### Update Order Status - FAILURE Scenarios
+### Action: Test validation for Update Order Status
+### Variables loaded from: http-client.env.json
+
+###############################################################################
+### STEP 1: Login to Get Token (for authorized failure tests)
+###############################################################################
+
+# @name loginForOrderUpdateFail
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 1: Update Without Authentication
+### Expected: 401 Unauthorized
+###############################################################################
+
+PATCH {{baseUrl}}{{apiPath}}/orders/1/status
+Content-Type: application/json
+Accept: application/json
+
+{
+  "status": "processing"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 2: Non-Existent Order ID
+### Expected: 404 Not Found
+###############################################################################
+
+PATCH {{baseUrl}}{{apiPath}}/orders/99999/status
+Authorization: Bearer {{loginForOrderUpdateFail.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "status": "processing"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 3: Invalid Status Value
+### Expected: 400 Bad Request
+###############################################################################
+
+PATCH {{baseUrl}}{{apiPath}}/orders/1/status
+Authorization: Bearer {{loginForOrderUpdateFail.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "status": "invalid-status"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 4: Missing Status Field
+### Expected: 400 Bad Request
+###############################################################################
+
+PATCH {{baseUrl}}{{apiPath}}/orders/1/status
+Authorization: Bearer {{loginForOrderUpdateFail.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 5: Invalid Status Transition
+### Expected: 400 Bad Request (if business rules exist)
+### Example: Cannot change from 'delivered' back to 'pending'
+###############################################################################
+
+PATCH {{baseUrl}}{{apiPath}}/orders/1/status
+Authorization: Bearer {{loginForOrderUpdateFail.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "status": "pending"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 6: Invalid Order ID Format
+### Expected: 400 Bad Request or 404 Not Found
+###############################################################################
+
+PATCH {{baseUrl}}{{apiPath}}/orders/invalid-id/status
+Authorization: Bearer {{loginForOrderUpdateFail.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "status": "processing"
+}
+

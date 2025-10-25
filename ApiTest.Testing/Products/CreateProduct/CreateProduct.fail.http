@@ -1,0 +1,223 @@
+### Create Product - FAILURE Scenarios
+### Action: Test validation and error handling for Create Product
+### Variables loaded from: http-client.env.json
+
+###############################################################################
+### STEP 1: Login to Get Token (for authorized failure tests)
+###############################################################################
+
+# @name loginForCreateFail
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 1: Create Product Without Authentication
+### Expected: 401 Unauthorized
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/products
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Unauthorized Product",
+  "description": "No token provided",
+  "price": 99.99,
+  "stockQuantity": 50
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 2: Missing Required Field - Name
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/products
+Authorization: Bearer {{loginForCreateFail.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "description": "Product without name",
+  "price": 99.99,
+  "stockQuantity": 50
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 2: Empty Name
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/products
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "",
+  "description": "Product with empty name",
+  "price": 99.99,
+  "stockQuantity": 50
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 3: Null Name
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/products
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": null,
+  "description": "Product with null name",
+  "price": 99.99,
+  "stockQuantity": 50
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 4: Negative Price
+### Expected: 400 Bad Request (if validation exists)
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/products
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Invalid Price Product",
+  "description": "Product with negative price",
+  "price": -50.00,
+  "stockQuantity": 10
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 5: Negative Stock Quantity
+### Expected: 400 Bad Request (if validation exists)
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/products
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Invalid Stock Product",
+  "description": "Product with negative stock",
+  "price": 50.00,
+  "stockQuantity": -10
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 6: Invalid JSON Syntax
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/products
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Invalid JSON Product"
+  "description": "Missing comma"
+  "price": 50.00,
+  "stockQuantity": 10
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 7: Missing Request Body
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/products
+Content-Type: application/json
+Accept: application/json
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 8: Wrong Content-Type
+### Expected: 415 Unsupported Media Type
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/products
+Content-Type: text/plain
+Accept: application/json
+
+name=Product&price=99.99
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 9: Invalid Price Format (String)
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/products
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "String Price Product",
+  "description": "Price is a string",
+  "price": "not-a-number",
+  "stockQuantity": 10
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 10: Invalid Stock Format (String)
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/products
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "String Stock Product",
+  "description": "Stock is a string",
+  "price": 99.99,
+  "stockQuantity": "not-a-number"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 11: Extra Unknown Fields
+### Expected: 201 Created (should ignore extra fields) or 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/products
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Product with Extra Fields",
+  "description": "Has unknown properties",
+  "price": 99.99,
+  "stockQuantity": 50,
+  "unknownField": "should be ignored",
+  "anotherUnknown": 12345
+}
+

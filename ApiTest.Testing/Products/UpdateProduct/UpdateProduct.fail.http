@@ -1,0 +1,177 @@
+### Update Product - FAILURE Scenarios
+### Action: Test validation and error handling for Update Product
+### Variables loaded from: http-client.env.json
+
+###############################################################################
+### STEP 1: Login to Get Token (for authorized failure tests)
+###############################################################################
+
+# @name loginForUpdateFail
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 1: Update Without Authentication
+### Expected: 401 Unauthorized
+###############################################################################
+
+PUT {{baseUrl}}{{apiPath}}/products/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Unauthorized Update",
+  "description": "No token provided",
+  "price": 100.00,
+  "stockQuantity": 20
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 2: Update Non-Existent Product
+### Expected: 404 Not Found
+###############################################################################
+
+PUT {{baseUrl}}{{apiPath}}/products/99999
+Authorization: Bearer {{loginForUpdateFail.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Non-Existent Product",
+  "description": "This product does not exist",
+  "price": 100.00,
+  "stockQuantity": 20
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 3: Invalid Product ID Format
+### Expected: 400 Bad Request or 404 Not Found
+###############################################################################
+
+PUT {{baseUrl}}{{apiPath}}/products/invalid-id
+Authorization: Bearer {{loginForUpdateFail.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Invalid ID Product",
+  "description": "Product with invalid ID",
+  "price": 100.00,
+  "stockQuantity": 20
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 4: Missing Required Field - Name
+### Expected: 400 Bad Request
+###############################################################################
+
+PUT {{baseUrl}}{{apiPath}}/products/1
+Authorization: Bearer {{loginForUpdateFail.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "description": "Missing name field",
+  "price": 100.00,
+  "stockQuantity": 20
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 5: Empty Name
+### Expected: 400 Bad Request
+###############################################################################
+
+PUT {{baseUrl}}{{apiPath}}/products/1
+Authorization: Bearer {{loginForUpdateFail.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "",
+  "description": "Empty name",
+  "price": 100.00,
+  "stockQuantity": 20
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 6: Negative Price
+### Expected: 400 Bad Request (if validation exists)
+###############################################################################
+
+PUT {{baseUrl}}{{apiPath}}/products/1
+Authorization: Bearer {{loginForUpdateFail.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Negative Price Product",
+  "description": "Invalid price",
+  "price": -50.00,
+  "stockQuantity": 20
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 7: Negative Stock
+### Expected: 400 Bad Request (if validation exists)
+###############################################################################
+
+PUT {{baseUrl}}{{apiPath}}/products/1
+Authorization: Bearer {{loginForUpdateFail.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Negative Stock Product",
+  "description": "Invalid stock",
+  "price": 50.00,
+  "stockQuantity": -10
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 8: Invalid JSON Syntax
+### Expected: 400 Bad Request
+###############################################################################
+
+PUT {{baseUrl}}{{apiPath}}/products/1
+Authorization: Bearer {{loginForUpdateFail.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Invalid JSON"
+  "price": 50.00
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 9: Missing Request Body
+### Expected: 400 Bad Request
+###############################################################################
+
+PUT {{baseUrl}}{{apiPath}}/products/1
+Authorization: Bearer {{loginForUpdateFail.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+

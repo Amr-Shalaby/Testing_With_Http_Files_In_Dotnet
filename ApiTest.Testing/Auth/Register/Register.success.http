@@ -1,0 +1,147 @@
+### Register - SUCCESS Scenarios
+### Action: Register a new user account
+
+@baseUrl = https://localhost:5001
+@apiPath = /api
+
+###############################################################################
+### SUCCESS SCENARIO 1: Register with All Valid Fields
+### Expected: 201 Created with user info and token
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "newuser",
+  "email": "newuser@example.com",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 2: Register with Minimum Length Username (3 chars)
+### Expected: 201 Created
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "abc",
+  "email": "abc@example.com",
+  "password": "pass123"
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 3: Register with Minimum Length Password (6 chars)
+### Expected: 201 Created
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "minpass",
+  "email": "minpass@example.com",
+  "password": "123456"
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 4: Register with Long Username
+### Expected: 201 Created
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "verylongusername12345",
+  "email": "longuser@example.com",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 5: Register with Complex Password
+### Expected: 201 Created
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "secureuser",
+  "email": "secure@example.com",
+  "password": "P@ssw0rd!123"
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 6: Register with Email Containing Plus Sign
+### Expected: 201 Created
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "emailplus",
+  "email": "user+test@example.com",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 7: Register with Mixed Case Username
+### Expected: 201 Created (case-insensitive check)
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "MixedCaseUser",
+  "email": "mixed@example.com",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 8: Verify Token Can Be Used After Registration
+### Expected: 201 Created, then token works for authenticated endpoint
+### NOTE: Copy token from response above and use in next request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "tokentest",
+  "email": "tokentest@example.com",
+  "password": "password123"
+}
+
+###
+
+# Use token from above registration
+POST {{baseUrl}}{{apiPath}}/products
+Authorization: Bearer {TOKEN_FROM_REGISTRATION}
+Content-Type: application/json
+
+{
+  "name": "Test Product by New User",
+  "description": "Created right after registration",
+  "price": 99.99,
+  "stockQuantity": 10
+}
+

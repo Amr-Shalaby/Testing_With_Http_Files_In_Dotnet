@@ -1,0 +1,76 @@
+### Login - FAILURE Scenarios
+### Action: Test authentication error handling
+
+@baseUrl = https://localhost:5001
+@apiPath = /api
+
+###############################################################################
+### FAILURE SCENARIO 1: Wrong Password
+### Expected: 401 Unauthorized
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "wrongpassword"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 2: Non-existent Username
+### Expected: 401 Unauthorized
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "nonexistent",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 3: Empty Username
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 4: Empty Password
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": ""
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 5: Missing Credentials
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{}
+

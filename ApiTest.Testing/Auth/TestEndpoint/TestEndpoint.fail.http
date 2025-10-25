@@ -1,0 +1,57 @@
+### Test Endpoint - FAILURE Scenarios
+### Action: Test error handling for test endpoint
+
+@baseUrl = https://localhost:5001
+@apiPath = /api
+
+###############################################################################
+### FAILURE SCENARIO 1: Wrong HTTP Method - POST
+### Expected: 405 Method Not Allowed
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/test
+Content-Type: application/json
+
+{}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 2: Wrong HTTP Method - PUT
+### Expected: 405 Method Not Allowed
+###############################################################################
+
+PUT {{baseUrl}}{{apiPath}}/auth/test
+Content-Type: application/json
+
+{}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 3: Wrong HTTP Method - DELETE
+### Expected: 405 Method Not Allowed
+###############################################################################
+
+DELETE {{baseUrl}}{{apiPath}}/auth/test
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 4: Wrong Path - Missing 'test'
+### Expected: 404 Not Found
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/auth/tes
+Accept: application/json
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 5: Wrong Path - Extra Characters
+### Expected: 404 Not Found
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/auth/test/extra
+Accept: application/json
+

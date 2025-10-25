@@ -1,0 +1,35 @@
+### Get Product By ID - SUCCESS Scenarios
+### Action: Retrieve a specific product by its ID
+
+@baseUrl = https://localhost:5001
+@apiPath = /api
+
+###############################################################################
+### SUCCESS SCENARIO 1: Get Existing Product By Valid ID
+### Expected: 200 OK with product details
+### Note: Use ID from GetAllProducts response
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/products/1
+Accept: application/json
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 2: Get Second Product
+### Expected: 200 OK with different product
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/products/2
+Accept: application/json
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 3: Get Third Product
+### Expected: 200 OK with product details
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/products/3
+Accept: application/json
+

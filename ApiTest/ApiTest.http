@@ -1,0 +1,24 @@
+# Quick Test File for ApiTest
+# For comprehensive testing, see ../ApiTest.Testing/ folder
+
+@baseUrl = https://localhost:5001
+@apiPath = /api
+
+### Quick Test: Get All Products
+GET {{baseUrl}}{{apiPath}}/products
+Accept: application/json
+
+###
+
+### Quick Test: Weather Forecast
+GET {{baseUrl}}{{apiPath}}/weatherforecast
+Accept: application/json
+
+###
+
+# For complete test collection with 38+ scenarios, see:
+# - ../ApiTest.Testing/Products.http (27 scenarios)
+# - ../ApiTest.Testing/WeatherForecast.http (11 scenarios)
+# - ../ApiTest.Testing/README.md (full documentation)
+
+###

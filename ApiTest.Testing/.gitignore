@@ -1,0 +1,7 @@
+# Private environment settings (not shared with team)
+http-client.private.env.json
+
+# Test data files (if any)
+*.private.http
+test-data/*.private.*
+

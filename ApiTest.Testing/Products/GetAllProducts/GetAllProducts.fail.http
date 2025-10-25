@@ -1,0 +1,50 @@
+### Get All Products - FAILURE Scenarios
+### Action: Test error handling for Get All Products endpoint
+
+# @baseUrl = https://localhost:5001
+# @apiPath = /api
+
+###############################################################################
+### FAILURE SCENARIO 1: Wrong HTTP Method - POST
+### Expected: 405 Method Not Allowed
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/products
+Content-Type: application/json
+Accept: application/json
+
+{}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 2: Wrong HTTP Method - PUT
+### Expected: 405 Method Not Allowed
+###############################################################################
+
+PUT {{baseUrl}}{{apiPath}}/products
+Content-Type: application/json
+Accept: application/json
+
+{}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 3: Wrong Path - Typo in Endpoint
+### Expected: 404 Not Found
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/product
+Accept: application/json
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 4: Request with Invalid Accept Header
+### Expected: 406 Not Acceptable (if content negotiation is strict) or 200 with JSON
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/products
+Accept: text/invalid-format
+

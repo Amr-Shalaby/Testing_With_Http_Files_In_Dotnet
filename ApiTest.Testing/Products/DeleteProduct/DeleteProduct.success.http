@@ -1,0 +1,60 @@
+### Delete Product - SUCCESS Scenarios
+### Action: Remove product from the system
+### Variables loaded from: http-client.env.json
+### NOTE: Product deletion requires authentication!
+
+###############################################################################
+### STEP 1: Login to Get Token
+### This request is NAMED "loginForDelete" so the token can be reused
+###############################################################################
+
+# @name loginForDelete
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 1: Create & Delete Product (Complete Workflow)
+### Expected: 201 Created, then 204 No Content
+### WARNING: This will actually delete the product!
+### Uses token from loginForDelete automatically!
+###############################################################################
+
+# First, create a product to delete
+# @name createProductToDelete
+POST {{baseUrl}}{{apiPath}}/products
+Authorization: Bearer {{loginForDelete.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Product To Delete",
+  "description": "This product will be deleted",
+  "price": 10.00,
+  "stockQuantity": 1
+}
+
+###
+
+# Then delete it using the ID from the create response
+DELETE {{baseUrl}}{{apiPath}}/products/{{createProductToDelete.response.body.$.id}}
+Authorization: Bearer {{loginForDelete.response.body.$.token}}
+Accept: application/json
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 2: Verify Product is Deleted
+### Expected: 404 Not Found (confirms deletion was successful)
+### Run this after the delete operation above
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/products/{{createProductToDelete.response.body.$.id}}
+Accept: application/json
+

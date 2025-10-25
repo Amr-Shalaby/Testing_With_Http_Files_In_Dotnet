@@ -1,0 +1,44 @@
+### Get All Orders - SUCCESS Scenarios
+### Action: Retrieve all orders from the system
+
+@baseUrl = https://localhost:5001
+@apiPath = /api
+
+###############################################################################
+### SUCCESS SCENARIO 1: Get All Orders
+### Expected: 200 OK with array of orders
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/orders
+Accept: application/json
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 2: Get Orders by Customer ID
+### Expected: 200 OK with filtered orders
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/orders?customerId=1
+Accept: application/json
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 3: Get Orders by Status
+### Expected: 200 OK with filtered orders
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/orders?status=pending
+Accept: application/json
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 4: Get Orders with Date Range
+### Expected: 200 OK with orders within date range
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/orders?startDate=2024-01-01&endDate=2024-12-31
+Accept: application/json
+

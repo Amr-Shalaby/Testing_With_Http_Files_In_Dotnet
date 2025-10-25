@@ -1,0 +1,163 @@
+### Authorized Requests Examples
+### Demonstrates how to use authentication tokens for protected endpoints
+
+@baseUrl = https://localhost:5001
+@apiPath = /api
+# Replace this with your actual token after login
+@token = YOUR_TOKEN_HERE
+
+###############################################################################
+### STEP 1: Login to Get Token
+### Run this first and copy the token from the response
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### STEP 2: Update @token variable above with the token from login response
+### Then run the requests below
+###############################################################################
+
+###############################################################################
+### SUCCESS: Create Product with Authentication
+### Expected: 201 Created
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/products
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Authorized Product",
+  "description": "Created with valid auth token",
+  "price": 149.99,
+  "stockQuantity": 30
+}
+
+###
+
+###############################################################################
+### SUCCESS: Update Product with Authentication
+### Expected: 200 OK
+###############################################################################
+
+PUT {{baseUrl}}{{apiPath}}/products/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Updated Authorized Product",
+  "description": "Updated with auth token",
+  "price": 199.99,
+  "stockQuantity": 20
+}
+
+###
+
+###############################################################################
+### SUCCESS: Create Category with Authentication
+### Expected: 201 Created
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/categories
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Authorized Category",
+  "description": "Created with authentication",
+  "parentCategoryId": null
+}
+
+###
+
+###############################################################################
+### SUCCESS: Create Order with Authentication
+### Expected: 201 Created
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/orders
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "customerId": 1,
+  "orderDate": "2024-10-25T14:00:00Z",
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 2,
+      "unitPrice": 99.99
+    }
+  ],
+  "shippingAddress": {
+    "street": "456 Auth St",
+    "city": "Secure City",
+    "state": "SC",
+    "zipCode": "12345",
+    "country": "USA"
+  },
+  "notes": "Authorized order"
+}
+
+###
+
+###############################################################################
+### FAILURE: Create Product WITHOUT Authentication
+### Expected: 401 Unauthorized
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/products
+Content-Type: application/json
+
+{
+  "name": "Unauthorized Product",
+  "description": "This should fail",
+  "price": 50.00,
+  "stockQuantity": 10
+}
+
+###
+
+###############################################################################
+### FAILURE: Create Product with Invalid Token
+### Expected: 401 Unauthorized
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/products
+Authorization: Bearer INVALID_TOKEN_12345
+Content-Type: application/json
+
+{
+  "name": "Invalid Token Product",
+  "description": "This should fail",
+  "price": 50.00,
+  "stockQuantity": 10
+}
+
+###
+
+###############################################################################
+### SUCCESS: GET Requests Don't Need Authentication
+### Expected: 200 OK (public endpoint)
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/products
+
+###
+
+###############################################################################
+### SUCCESS: GET Specific Product (Public)
+### Expected: 200 OK
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/products/1
+

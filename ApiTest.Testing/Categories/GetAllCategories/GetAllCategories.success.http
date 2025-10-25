@@ -1,0 +1,36 @@
+### Get All Categories - SUCCESS Scenarios
+### Action: Retrieve all product categories
+
+@baseUrl = https://localhost:5001
+@apiPath = /api
+
+###############################################################################
+### SUCCESS SCENARIO 1: Basic Get All Categories
+### Expected: 200 OK with array of categories
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/categories
+Accept: application/json
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 2: Get All Categories with Pagination Parameters
+### Expected: 200 OK with paginated results
+### Note: Implement if pagination is supported
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/categories?page=1&pageSize=10
+Accept: application/json
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 3: Get Categories Sorted by Name
+### Expected: 200 OK with sorted categories
+### Note: Implement if sorting is supported
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/categories?sortBy=name&order=asc
+Accept: application/json
+

@@ -1,0 +1,304 @@
+### Register - FAILURE Scenarios
+### Action: Test validation and error handling for registration
+
+@baseUrl = https://localhost:5001
+@apiPath = /api
+
+###############################################################################
+### FAILURE SCENARIO 1: Duplicate Username
+### Expected: 400 Bad Request - Username already exists
+### NOTE: "testuser" already exists in seed data
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "email": "different@example.com",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 2: Duplicate Email
+### Expected: 400 Bad Request - Email already exists
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "differentuser",
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 3: Username Too Short (Less than 3 chars)
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "ab",
+  "email": "short@example.com",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 4: Empty Username
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "",
+  "email": "empty@example.com",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 5: Null Username
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": null,
+  "email": "null@example.com",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 6: Missing Username Field
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "missing@example.com",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 7: Invalid Email Format (No @)
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "invalidemail",
+  "email": "notanemail",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 8: Empty Email
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "noemail",
+  "email": "",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 9: Missing Email Field
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "missingemail",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 10: Password Too Short (Less than 6 chars)
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "shortpass",
+  "email": "shortpass@example.com",
+  "password": "12345"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 11: Empty Password
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "nopass",
+  "email": "nopass@example.com",
+  "password": ""
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 12: Missing Password Field
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "missingpass",
+  "email": "missingpass@example.com"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 13: All Fields Empty
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "",
+  "email": "",
+  "password": ""
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 14: Empty JSON Object
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 15: Invalid JSON Syntax
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "invalidjson"
+  "email": "test@example.com"
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 16: Username with Whitespace Only
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "   ",
+  "email": "whitespace@example.com",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 17: Email with Spaces
+### Expected: 400 Bad Request (invalid format)
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "spaceemail",
+  "email": "space email@example.com",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 18: Case Sensitivity Test - Duplicate Username Different Case
+### Expected: 400 Bad Request (username exists - case insensitive)
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "TESTUSER",
+  "email": "different2@example.com",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 19: Extra Unknown Fields
+### Expected: 201 Created (should ignore extra fields) or 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "extrafields",
+  "email": "extra@example.com",
+  "password": "password123",
+  "unknownField": "should be ignored",
+  "role": "Admin"
+}
+

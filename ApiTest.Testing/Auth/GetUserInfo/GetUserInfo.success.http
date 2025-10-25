@@ -1,0 +1,86 @@
+### Get User Info - SUCCESS Scenarios
+### Action: Retrieve user information by username
+
+@baseUrl = https://localhost:5001
+@apiPath = /api
+
+###############################################################################
+### SUCCESS SCENARIO 1: Get Existing Test User Info
+### Expected: 200 OK with user details
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/auth/user/testuser
+Accept: application/json
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 2: Get Admin User Info
+### Expected: 200 OK with user details (role=Admin)
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/auth/user/admin
+Accept: application/json
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 3: Get User Info with Mixed Case Username
+### Expected: 200 OK (case-insensitive lookup)
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/auth/user/TESTUSER
+Accept: application/json
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 4: Get Newly Registered User Info
+### Expected: 200 OK with user details
+### NOTE: First register the user, then get info
+###############################################################################
+
+# Step 1: Register new user
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "lookuptest",
+  "email": "lookuptest@example.com",
+  "password": "password123"
+}
+
+###
+
+# Step 2: Get the user info
+GET {{baseUrl}}{{apiPath}}/auth/user/lookuptest
+Accept: application/json
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 5: Verify User Info Response Structure
+### Expected: 200 OK with id, username, email, role fields
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/auth/user/testuser
+Accept: application/json
+
+# Expected response structure:
+# {
+#   "id": 1,
+#   "username": "testuser",
+#   "email": "test@example.com",
+#   "role": "User"
+# }
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 6: Get User Info with Different Case
+### Expected: 200 OK (case-insensitive)
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/auth/user/TeStuSeR
+Accept: application/json
+

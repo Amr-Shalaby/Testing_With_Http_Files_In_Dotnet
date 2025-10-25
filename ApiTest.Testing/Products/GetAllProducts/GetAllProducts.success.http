@@ -1,0 +1,38 @@
+### Get All Products - SUCCESS Scenarios
+### Action: Retrieve all products from the database
+### Variables loaded from: http-client.env.json
+
+# NOTE: baseUrl and apiPath are automatically loaded from http-client.env.json
+# Default environment: dev (https://localhost:5001/api)
+# Switch environments using your tool's environment selector
+
+###############################################################################
+### SUCCESS SCENARIO 1: Basic Get All Products
+### Expected: 200 OK with array of products
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/products
+Accept: application/json
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 2: Get All Products with Custom Headers
+### Expected: 200 OK with array of products
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/products
+Accept: application/json
+User-Agent: TestClient/1.0
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 3: Get All Products - Verify Response Structure
+### Expected: 200 OK with valid product objects
+### Each product should have: id, name, description, price, stockQuantity, createdAt
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/products
+Accept: application/json
+

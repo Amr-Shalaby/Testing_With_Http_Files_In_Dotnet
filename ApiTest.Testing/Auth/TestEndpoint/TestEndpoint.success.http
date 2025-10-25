@@ -1,0 +1,45 @@
+### Test Endpoint - SUCCESS Scenarios
+### Action: Verify authentication API is working
+
+@baseUrl = https://localhost:5001
+@apiPath = /api
+
+###############################################################################
+### SUCCESS SCENARIO 1: Basic Test Endpoint
+### Expected: 200 OK with status message and test users
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/auth/test
+Accept: application/json
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 2: Verify Test Endpoint Response Structure
+### Expected: 200 OK with message, timestamp, and testUsers array
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/auth/test
+Accept: application/json
+
+# Expected response structure:
+# {
+#   "message": "Authentication API is working",
+#   "timestamp": "2024-10-25T...",
+#   "testUsers": [
+#     { "username": "testuser", "password": "password123", "role": "User" },
+#     { "username": "admin", "password": "admin123", "role": "Admin" }
+#   ]
+# }
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 3: Test Endpoint with Custom Headers
+### Expected: 200 OK
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/auth/test
+Accept: application/json
+User-Agent: TestClient/1.0
+

@@ -1,0 +1,64 @@
+### Get Product By ID - FAILURE Scenarios
+### Action: Test error handling for Get Product By ID endpoint
+
+@baseUrl = https://localhost:5001
+@apiPath = /api
+
+###############################################################################
+### FAILURE SCENARIO 1: Get Non-Existent Product
+### Expected: 404 Not Found
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/products/99999
+Accept: application/json
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 2: Invalid ID Format - String Instead of Number
+### Expected: 400 Bad Request or 404 Not Found
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/products/invalid-id
+Accept: application/json
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 3: Invalid ID Format - Special Characters
+### Expected: 400 Bad Request or 404 Not Found
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/products/@#$%
+Accept: application/json
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 4: Negative ID
+### Expected: 404 Not Found (or 400 Bad Request depending on validation)
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/products/-1
+Accept: application/json
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 5: Zero ID
+### Expected: 404 Not Found
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/products/0
+Accept: application/json
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 6: Very Large ID (Boundary Test)
+### Expected: 404 Not Found
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/products/2147483647
+Accept: application/json
+

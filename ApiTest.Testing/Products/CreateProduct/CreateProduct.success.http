@@ -1,0 +1,179 @@
+### Create Product - SUCCESS Scenarios
+### Action: Create new product in the system
+### Variables loaded from: http-client.env.json
+### NOTE: Product creation requires authentication!
+
+###############################################################################
+### STEP 1: Login to Get Token
+### This request is NAMED "loginForProduct" so the token can be reused
+###############################################################################
+
+# @name loginForProduct
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 1: Create Product with All Fields
+### Expected: 201 Created with product details and Location header
+### NOTE: Uses token from loginForProduct automatically!
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/products
+Authorization: Bearer {{loginForProduct.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "New Test Product",
+  "description": "Complete product with all fields",
+  "price": 99.99,
+  "stockQuantity": 50
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 2: Create Product with Minimal Required Fields
+### Expected: 201 Created
+### NOTE: Reuses the same token from loginForProduct
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/products
+Authorization: Bearer {{loginForProduct.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Minimal Product",
+  "description": null,
+  "price": 19.99,
+  "stockQuantity": 10
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 3: Create Product with Zero Price (Free Product)
+### Expected: 201 Created
+### NOTE: Reuses the same token from loginForProduct
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/products
+Authorization: Bearer {{loginForProduct.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Free Sample Product",
+  "description": "Free promotional item",
+  "price": 0.00,
+  "stockQuantity": 100
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 4: Create Product with Zero Stock (Pre-order)
+### Expected: 201 Created
+### NOTE: Reuses the same token from loginForProduct
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/products
+Authorization: Bearer {{loginForProduct.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Pre-order Product",
+  "description": "Available for pre-order",
+  "price": 299.99,
+  "stockQuantity": 0
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 5: Create Product with Very High Price
+### Expected: 201 Created
+### NOTE: Reuses the same token from loginForProduct
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/products
+Authorization: Bearer {{loginForProduct.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Luxury Item",
+  "description": "Premium high-value product",
+  "price": 999999.99,
+  "stockQuantity": 1
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 6: Create Product with Special Characters in Name
+### Expected: 201 Created
+### NOTE: Reuses the same token from loginForProduct
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/products
+Authorization: Bearer {{loginForProduct.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Product™ with <special> & [characters] @2024",
+  "description": "Testing special character handling",
+  "price": 49.99,
+  "stockQuantity": 25
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 7: Create Product with Unicode Characters
+### Expected: 201 Created
+### NOTE: Reuses the same token from loginForProduct
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/products
+Authorization: Bearer {{loginForProduct.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Продукт 产品 محصول 🎉",
+  "description": "International product with Unicode",
+  "price": 75.00,
+  "stockQuantity": 30
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 8: Create Product with Long Description
+### Expected: 201 Created
+### NOTE: Reuses the same token from loginForProduct
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/products
+Authorization: Bearer {{loginForProduct.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Product with Detailed Info",
+  "description": "This is a very comprehensive description that includes multiple paragraphs of information about the product. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  "price": 59.99,
+  "stockQuantity": 15
+}
+

@@ -1,0 +1,89 @@
+### Update Order Status - SUCCESS Scenarios
+### Action: Change the status of an existing order
+### Variables loaded from: http-client.env.json
+### NOTE: Order status update requires authentication!
+
+###############################################################################
+### STEP 1: Login to Get Token
+### This request is NAMED "loginForOrderUpdate" so the token can be reused
+###############################################################################
+
+# @name loginForOrderUpdate
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 1: Update Order Status to Processing
+### Expected: 200 OK with updated order
+### Uses token from loginForOrderUpdate automatically!
+###############################################################################
+
+PATCH {{baseUrl}}{{apiPath}}/orders/1/status
+Authorization: Bearer {{loginForOrderUpdate.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "status": "processing"
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 2: Update Order Status to Shipped
+### Expected: 200 OK
+### Reuses token from loginForOrderUpdate
+###############################################################################
+
+PATCH {{baseUrl}}{{apiPath}}/orders/1/status
+Authorization: Bearer {{loginForOrderUpdate.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "status": "shipped",
+  "trackingNumber": "TRACK123456789"
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 3: Update Order Status to Delivered
+### Expected: 200 OK
+### Reuses token from loginForOrderUpdate
+###############################################################################
+
+PATCH {{baseUrl}}{{apiPath}}/orders/1/status
+Authorization: Bearer {{loginForOrderUpdate.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "status": "delivered"
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 4: Update Order Status to Cancelled
+### Expected: 200 OK
+### Reuses token from loginForOrderUpdate
+###############################################################################
+
+PATCH {{baseUrl}}{{apiPath}}/orders/2/status
+Authorization: Bearer {{loginForOrderUpdate.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "status": "cancelled",
+  "reason": "Customer requested cancellation"
+}
+

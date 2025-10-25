@@ -1,0 +1,34 @@
+### Get All Orders - FAILURE Scenarios
+### Action: Test error handling for Get All Orders endpoint
+
+@baseUrl = https://localhost:5001
+@apiPath = /api
+
+###############################################################################
+### FAILURE SCENARIO 1: Invalid Date Format
+### Expected: 400 Bad Request
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/orders?startDate=invalid-date
+Accept: application/json
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 2: Invalid Status Value
+### Expected: 400 Bad Request (if validation exists)
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/orders?status=invalid-status
+Accept: application/json
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 3: Wrong Endpoint
+### Expected: 404 Not Found
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/order
+Accept: application/json
+

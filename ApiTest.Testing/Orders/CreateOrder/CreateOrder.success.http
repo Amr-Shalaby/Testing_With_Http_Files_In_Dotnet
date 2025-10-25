@@ -1,0 +1,125 @@
+### Create Order - SUCCESS Scenarios
+### Action: Create a new order in the system
+### Variables loaded from: http-client.env.json
+### NOTE: Requires authentication! Token is captured automatically.
+
+###############################################################################
+### STEP 1: Login to Get Token
+### This request is NAMED "loginForOrder" so the token can be reused
+###############################################################################
+
+# @name loginForOrder
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 1: Create Order with Single Item
+### Expected: 201 Created with order details
+### NOTE: Uses token from loginForOrder automatically!
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/orders
+Authorization: Bearer {{loginForOrder.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "orderDate": "2024-10-25T10:30:00Z",
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 2,
+      "unitPrice": 99.99
+    }
+  ],
+  "shippingAddress": {
+    "street": "123 Main St",
+    "city": "New York",
+    "state": "NY",
+    "zipCode": "10001",
+    "country": "USA"
+  }
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 2: Create Order with Multiple Items
+### Expected: 201 Created
+### NOTE: Authenticated user automatically becomes the customer
+### Reuses token from loginForOrder
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/orders
+Authorization: Bearer {{loginForOrder.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "orderDate": "2024-10-25T11:00:00Z",
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 1,
+      "unitPrice": 99.99
+    },
+    {
+      "productId": 2,
+      "quantity": 3,
+      "unitPrice": 29.99
+    },
+    {
+      "productId": 3,
+      "quantity": 2,
+      "unitPrice": 79.99
+    }
+  ],
+  "shippingAddress": {
+    "street": "456 Oak Ave",
+    "city": "Los Angeles",
+    "state": "CA",
+    "zipCode": "90001",
+    "country": "USA"
+  }
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 3: Create Order with Notes
+### Expected: 201 Created
+### NOTE: UserId and Username will be automatically extracted from token
+### Reuses token from loginForOrder
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/orders
+Authorization: Bearer {{loginForOrder.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "orderDate": "2024-10-25T12:00:00Z",
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 1,
+      "unitPrice": 99.99
+    }
+  ],
+  "shippingAddress": {
+    "street": "789 Pine Rd",
+    "city": "Chicago",
+    "state": "IL",
+    "zipCode": "60601",
+    "country": "USA"
+  },
+  "notes": "Please deliver after 5 PM"
+}
+

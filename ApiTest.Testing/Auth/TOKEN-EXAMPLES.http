@@ -1,0 +1,368 @@
+### Token Capture Examples & Testing Playground
+### This file demonstrates various token capture patterns
+### Variables loaded from: http-client.env.json
+
+###############################################################################
+### EXAMPLE 1: Basic Token Capture
+### This is the most common pattern
+###############################################################################
+
+# @name basicLogin
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+###
+
+### Use the captured token
+POST {{baseUrl}}{{apiPath}}/products
+Authorization: Bearer {{basicLogin.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "name": "Product Created with Token",
+  "price": 99.99,
+  "stockQuantity": 10
+}
+
+###
+
+###############################################################################
+### EXAMPLE 2: Multiple User Accounts
+### Capture tokens for different users
+###############################################################################
+
+# @name userLogin
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+###
+
+# @name adminLogin
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin123"
+}
+
+###
+
+### Create product as regular user
+POST {{baseUrl}}{{apiPath}}/products
+Authorization: Bearer {{userLogin.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "name": "User Product",
+  "price": 50.00,
+  "stockQuantity": 25
+}
+
+###
+
+### Create product as admin
+POST {{baseUrl}}{{apiPath}}/products
+Authorization: Bearer {{adminLogin.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "name": "Admin Product",
+  "price": 150.00,
+  "stockQuantity": 5
+}
+
+###
+
+###############################################################################
+### EXAMPLE 3: Token Reuse in Multiple Requests
+### One login, many requests
+###############################################################################
+
+# @name multiUseLogin
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+###
+
+### Request 1: Create Product
+POST {{baseUrl}}{{apiPath}}/products
+Authorization: Bearer {{multiUseLogin.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "name": "Product 1",
+  "price": 10.00,
+  "stockQuantity": 100
+}
+
+###
+
+### Request 2: Create Category
+POST {{baseUrl}}{{apiPath}}/categories
+Authorization: Bearer {{multiUseLogin.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "name": "Electronics",
+  "description": "Electronic devices"
+}
+
+###
+
+### Request 3: Create Order
+POST {{baseUrl}}{{apiPath}}/orders
+Authorization: Bearer {{multiUseLogin.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "orderDate": "2024-10-25T10:00:00Z",
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 2,
+      "unitPrice": 99.99
+    }
+  ],
+  "shippingAddress": {
+    "street": "123 Test St",
+    "city": "Test City",
+    "state": "TS",
+    "zipCode": "12345",
+    "country": "USA"
+  }
+}
+
+###
+
+###############################################################################
+### EXAMPLE 4: Extracting Multiple Response Values
+### Access different fields from the response
+###############################################################################
+
+# @name fullLogin
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+###
+
+### Use various fields from login response
+GET {{baseUrl}}{{apiPath}}/users/{{fullLogin.response.body.$.userId}}
+Authorization: Bearer {{fullLogin.response.body.$.token}}
+Accept: application/json
+
+###
+
+###############################################################################
+### EXAMPLE 5: Chaining Requests (Create → Use)
+### Create something, then use its ID in next request
+###############################################################################
+
+# @name chainLogin
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+###
+
+# @name chainProduct
+POST {{baseUrl}}{{apiPath}}/products
+Authorization: Bearer {{chainLogin.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "name": "Chained Product",
+  "price": 75.00,
+  "stockQuantity": 30
+}
+
+###
+
+### Get the product we just created (using its ID)
+GET {{baseUrl}}{{apiPath}}/products/{{chainProduct.response.body.$.id}}
+Authorization: Bearer {{chainLogin.response.body.$.token}}
+Accept: application/json
+
+###
+
+### Update the product
+PUT {{baseUrl}}{{apiPath}}/products/{{chainProduct.response.body.$.id}}
+Authorization: Bearer {{chainLogin.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "name": "Updated Chained Product",
+  "price": 85.00,
+  "stockQuantity": 35
+}
+
+###
+
+### Delete the product
+DELETE {{baseUrl}}{{apiPath}}/products/{{chainProduct.response.body.$.id}}
+Authorization: Bearer {{chainLogin.response.body.$.token}}
+
+###
+
+###############################################################################
+### EXAMPLE 6: Register New User → Login → Use Token
+### Complete workflow from registration to authenticated request
+###############################################################################
+
+# @name registerNew
+POST {{baseUrl}}{{apiPath}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "newuser{{$randomInt 1000 9999}}",
+  "email": "newuser{{$randomInt 1000 9999}}@example.com",
+  "password": "NewPass123!"
+}
+
+###
+
+# @name loginNew
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "{{registerNew.response.body.$.username}}",
+  "password": "NewPass123!"
+}
+
+###
+
+### Create product with newly registered user
+POST {{baseUrl}}{{apiPath}}/products
+Authorization: Bearer {{loginNew.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "name": "New User's First Product",
+  "price": 25.00,
+  "stockQuantity": 15
+}
+
+###
+
+###############################################################################
+### EXAMPLE 7: Testing Token Validation
+### Verify token works across different endpoints
+###############################################################################
+
+# @name validationLogin
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+###
+
+### Test 1: Read endpoint (no auth required, but token provided)
+GET {{baseUrl}}{{apiPath}}/products
+Authorization: Bearer {{validationLogin.response.body.$.token}}
+Accept: application/json
+
+###
+
+### Test 2: Write endpoint (auth required)
+POST {{baseUrl}}{{apiPath}}/products
+Authorization: Bearer {{validationLogin.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "name": "Validated Product",
+  "price": 40.00,
+  "stockQuantity": 20
+}
+
+###
+
+### Test 3: Get user info (verify token identity)
+GET {{baseUrl}}{{apiPath}}/auth/user/{{validationLogin.response.body.$.username}}
+Authorization: Bearer {{validationLogin.response.body.$.token}}
+Accept: application/json
+
+###
+
+###############################################################################
+### EXAMPLE 8: Working with Response Headers
+### Some APIs return tokens in headers instead of body
+###############################################################################
+
+# @name headerLogin
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+###
+
+### Token from body (standard)
+POST {{baseUrl}}{{apiPath}}/products
+Authorization: Bearer {{headerLogin.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "name": "Product via Body Token",
+  "price": 60.00,
+  "stockQuantity": 40
+}
+
+###
+
+### If your API returns token in header (uncomment if needed):
+### Authorization: Bearer {{headerLogin.response.headers.X-Auth-Token}}
+
+###
+
+###############################################################################
+### PLAYGROUND: Test Your Own Scenarios Below
+### Copy any pattern above and modify it for your needs
+###############################################################################
+
+### Your login here
+# @name myLogin
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+###
+
+### Your test here
+# Use {{myLogin.response.body.$.token}} in your requests
+

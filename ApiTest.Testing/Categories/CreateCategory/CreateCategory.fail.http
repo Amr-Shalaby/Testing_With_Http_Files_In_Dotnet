@@ -1,0 +1,102 @@
+### Create Category - FAILURE Scenarios
+### Action: Test validation for Create Category
+### Variables loaded from: http-client.env.json
+
+###############################################################################
+### STEP 1: Login to Get Token (for authorized failure tests)
+###############################################################################
+
+# @name loginForCategoryFail
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 1: Create Category Without Authentication
+### Expected: 401 Unauthorized
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/categories
+Authorization: Bearer {{loginForCategoryFail.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Unauthorized Category",
+  "description": "No token provided"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 2: Missing Required Field - Name
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/categories
+Authorization: Bearer {{loginForCategoryFail.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "description": "Category without name"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 3: Empty Name
+### Expected: 400 Bad Request
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/categories
+Authorization: Bearer {{loginForCategoryFail.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "",
+  "description": "Category with empty name"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 4: Duplicate Category Name
+### Expected: 409 Conflict (if enforced)
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/categories
+Authorization: Bearer {{loginForCategoryFail.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Electronics",
+  "description": "Duplicate category"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 5: Invalid Parent Category ID
+### Expected: 400 Bad Request or 404 Not Found
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/categories
+Authorization: Bearer {{loginForCategoryFail.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Invalid Subcategory",
+  "description": "Parent category does not exist",
+  "parentCategoryId": 99999
+}
+

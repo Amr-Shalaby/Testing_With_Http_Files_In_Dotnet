@@ -1,0 +1,94 @@
+### Delete Product - FAILURE Scenarios
+### Action: Test error handling for Delete Product
+### Variables loaded from: http-client.env.json
+
+###############################################################################
+### STEP 1: Login to Get Token (for authorized failure tests)
+###############################################################################
+
+# @name loginForDeleteFail
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 1: Delete Without Authentication
+### Expected: 401 Unauthorized
+###############################################################################
+
+DELETE {{baseUrl}}{{apiPath}}/products/1
+Accept: application/json
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 2: Delete Non-Existent Product
+### Expected: 404 Not Found
+###############################################################################
+
+DELETE {{baseUrl}}{{apiPath}}/products/99999
+Authorization: Bearer {{loginForDeleteFail.response.body.$.token}}
+Accept: application/json
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 3: Invalid Product ID Format - String
+### Expected: 400 Bad Request or 404 Not Found
+###############################################################################
+
+DELETE {{baseUrl}}{{apiPath}}/products/invalid-id
+Authorization: Bearer {{loginForDeleteFail.response.body.$.token}}
+Accept: application/json
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 4: Invalid Product ID Format - Special Characters
+### Expected: 400 Bad Request or 404 Not Found
+###############################################################################
+
+DELETE {{baseUrl}}{{apiPath}}/products/@#$%
+Authorization: Bearer {{loginForDeleteFail.response.body.$.token}}
+Accept: application/json
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 5: Negative Product ID
+### Expected: 404 Not Found
+###############################################################################
+
+DELETE {{baseUrl}}{{apiPath}}/products/-1
+Authorization: Bearer {{loginForDeleteFail.response.body.$.token}}
+Accept: application/json
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 6: Zero Product ID
+### Expected: 404 Not Found
+###############################################################################
+
+DELETE {{baseUrl}}{{apiPath}}/products/0
+Authorization: Bearer {{loginForDeleteFail.response.body.$.token}}
+Accept: application/json
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 7: Delete Already Deleted Product (Idempotency Test)
+### Expected: 404 Not Found
+### This tests if trying to delete the same product twice handles correctly
+###############################################################################
+
+DELETE {{baseUrl}}{{apiPath}}/products/88888
+Authorization: Bearer {{loginForDeleteFail.response.body.$.token}}
+Accept: application/json
+

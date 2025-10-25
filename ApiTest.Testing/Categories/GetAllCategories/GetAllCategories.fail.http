@@ -1,0 +1,37 @@
+### Get All Categories - FAILURE Scenarios
+### Action: Test error handling for Get All Categories endpoint
+
+@baseUrl = https://localhost:5001
+@apiPath = /api
+
+###############################################################################
+### FAILURE SCENARIO 1: Wrong HTTP Method - POST
+### Expected: 405 Method Not Allowed
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/categories
+Content-Type: application/json
+Accept: application/json
+
+{}
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 2: Invalid Query Parameters
+### Expected: 400 Bad Request (if validation exists) or 200 with default values
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/categories?page=-1&pageSize=0
+Accept: application/json
+
+###
+
+###############################################################################
+### FAILURE SCENARIO 3: Wrong Endpoint Path
+### Expected: 404 Not Found
+###############################################################################
+
+GET {{baseUrl}}{{apiPath}}/category
+Accept: application/json
+

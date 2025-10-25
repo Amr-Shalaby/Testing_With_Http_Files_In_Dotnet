@@ -1,0 +1,76 @@
+### Create Category - SUCCESS Scenarios
+### Action: Create new category in the system
+### Variables loaded from: http-client.env.json
+### NOTE: Category creation requires authentication!
+
+###############################################################################
+### STEP 1: Login to Get Token
+### This request is NAMED "loginForCategory" so the token can be reused
+###############################################################################
+
+# @name loginForCategory
+POST {{baseUrl}}{{apiPath}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 1: Create Category with All Fields
+### Expected: 201 Created with category details
+### NOTE: Uses token from loginForCategory automatically!
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/categories
+Authorization: Bearer {{loginForCategory.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Electronics",
+  "description": "Electronic devices and accessories",
+  "parentCategoryId": null
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 2: Create Subcategory
+### Expected: 201 Created
+### NOTE: Reuses token from loginForCategory
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/categories
+Authorization: Bearer {{loginForCategory.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Smartphones",
+  "description": "Mobile phones and smartphones",
+  "parentCategoryId": 1
+}
+
+###
+
+###############################################################################
+### SUCCESS SCENARIO 3: Create Category with Minimal Data
+### Expected: 201 Created
+### NOTE: Reuses token from loginForCategory
+###############################################################################
+
+POST {{baseUrl}}{{apiPath}}/categories
+Authorization: Bearer {{loginForCategory.response.body.$.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Books",
+  "description": null,
+  "parentCategoryId": null
+}
+
